@@ -1,0 +1,29 @@
+name: tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Test on node ${{ matrix.node-version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node-version: [10, 12]
+        os: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: volta-cli/action@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: volta install pnpm
+      - run: pnpm install
+      - run: pnpm run lint
+      - run: pnpm run test:cov
+      - run: pnpm run build

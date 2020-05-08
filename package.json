@@ -1,0 +1,77 @@
+{
+  "name": "@willsoto/node-typescript-pkg",
+  "version": "0.1.0",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "license": "Apache-2.0",
+  "author": "Will Soto <willsoto@users.noreply.github.com> (https://github.com/willsoto)",
+  "main": "index.js",
+  "typings": "./typings/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "typings"
+  ],
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "rollup --config rollup.config.js",
+    "postbuild": "npm run typings",
+    "clean": "rimraf dist typings coverage",
+    "lint": "eslint src test --ext ts --fix",
+    "prerelease": "npm run build",
+    "release": "standard-version --sign",
+    "test": "jest",
+    "pretest:cov": "rimraf coverage",
+    "test:cov": "jest --coverage",
+    "pretypings": "rimraf typings",
+    "typings": "tsc --project tsconfig.build.json --declaration --declarationDir typings --emitDeclarationOnly"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run lint",
+      "prettier --write"
+    ],
+    "*.{md,yaml,yml,json}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "~7.9.6",
+    "@babel/preset-env": "~7.9.6",
+    "@babel/preset-typescript": "~7.9.0",
+    "@commitlint/cli": "~8.3.5",
+    "@commitlint/config-conventional": "~8.3.4",
+    "@rollup/plugin-babel": "~5.0.0",
+    "@rollup/plugin-typescript": "~4.1.1",
+    "@types/jest": "~25.2.1",
+    "@types/node": "~13.13.5",
+    "@typescript-eslint/eslint-plugin": "~2.31.0",
+    "@typescript-eslint/parser": "~2.31.0",
+    "babel-jest": "~26.0.1",
+    "eslint": "~6.8.0",
+    "eslint-config-prettier": "~6.11.0",
+    "eslint-plugin-jest": "~23.9.0",
+    "husky": "~4.2.5",
+    "jest": "~26.0.1",
+    "lint-staged": "~10.2.2",
+    "prettier": "~2.0.5",
+    "prettier-plugin-organize-imports": "~1.0.3",
+    "prettier-plugin-packagejson": "~2.2.2",
+    "rimraf": "~3.0.2",
+    "rollup": "~2.8.2",
+    "rollup-plugin-eslint": "~7.0.0",
+    "rollup-plugin-filesize": "~8.0.2",
+    "standard-version": "~8.0.0",
+    "typescript": "~3.8.3"
+  },
+  "volta": {
+    "node": "14.2.0"
+  }
+}
