@@ -1,18 +1,14 @@
 import { Enforcer, newEnforcer } from "casbin";
 import Knex from "knex";
 import * as path from "path";
-import { ObjectionAdapter } from "../src/adapter";
+import { ObjectionAdapter } from "../src";
 import { CasbinRule } from "../src/model";
 
 const knex = Knex({
-  client: "pg",
+  client: "sqlite3",
   asyncStackTraces: true,
   connection: {
-    host: process.env.POSTGRES_HOST || "localhost",
-    port: 5432,
-    database: process.env.POSTGRES_DB || "casbin",
-    user: process.env.POSTGRES_USER || "casbin",
-    password: process.env.POSTGRES_PASSWORD || "casbin",
+    filename: path.join(process.cwd(), "casbin_test.sqlite"),
   },
 });
 

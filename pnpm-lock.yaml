@@ -17,10 +17,9 @@ devDependencies:
   eslint-plugin-jest: 23.9.0_eslint@6.8.0+typescript@3.8.3
   husky: 4.2.5
   jest: 26.0.1
-  knex: 0.21.1_pg@8.1.0
+  knex: 0.21.1_sqlite3@4.2.0
   lint-staged: 10.2.2
   objection: 2.1.3_knex@0.21.1
-  pg: 8.1.0_pg@8.1.0
   prettier: 2.0.5
   prettier-plugin-organize-imports: 1.0.3_prettier@2.0.5+typescript@3.8.3
   prettier-plugin-packagejson: 2.2.3_prettier@2.0.5
@@ -28,6 +27,7 @@ devDependencies:
   rollup: 2.8.2
   rollup-plugin-eslint: 7.0.0
   rollup-plugin-filesize: 8.0.2
+  sqlite3: 4.2.0
   standard-version: 8.0.0
   typescript: 3.8.3
   winston: 3.2.1

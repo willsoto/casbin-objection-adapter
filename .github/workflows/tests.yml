@@ -10,10 +10,6 @@ on:
 
 env:
   NODE_ENV: "ci"
-  POSTGRES_USER: "casbin"
-  POSTGRES_DB: "casbin"
-  POSTGRES_PASSWORD: "casbin"
-  POSTGRES_HOST: "postgres"
 
 jobs:
   test:
@@ -23,22 +19,6 @@ jobs:
       matrix:
         node-version: [10, 12, 14]
         os: [ubuntu-latest]
-
-    services:
-      postgres:
-        image: postgres:12-alpine
-        ports:
-          - "5432:5432"
-        env:
-          POSTGRES_USER: $POSTGRES_USER
-          POSTGRES_DB: $POSTGRES_DB
-          POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
       - uses: actions/checkout@v1
