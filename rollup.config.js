@@ -1,16 +1,22 @@
-import { eslint } from "rollup-plugin-eslint";
 import filesize from "rollup-plugin-filesize";
-import babel from "@rollup/plugin-babel";
+import typescript from "@rollup/plugin-typescript";
 import pkg from "./package.json";
+import slugify from "@sindresorhus/slugify";
 
-const formats = ["umd", "esm"];
-const globals = {};
+const formats = ["cjs", "esm"];
+const globals = Object.keys(pkg.peerDependencies).reduce((obj, dependency) => {
+  obj[dependency] = slugify(dependency);
+
+  return obj;
+}, {});
 const [, pkgName] = pkg.name.split("/");
+
+console.log(globals);
 
 export default {
   input: "src/index.ts",
   output: formats.map((format) => ({
-    file: `dist/${pkgName}.${format}.js`,
+    file: `dist/${format}.js`,
     format,
     name: pkgName,
     sourcemap: true,
@@ -18,13 +24,8 @@ export default {
   })),
   external: Object.keys(globals),
   plugins: [
-    eslint({
-      throwOnWarning: true,
-      throwOnError: true,
-    }),
-    babel({
-      extensions: [".js", ".jsx", ".es6", ".es", ".mjs", ".ts"],
-      babelHelpers: "bundled",
+    typescript({
+      tsconfig: "./tsconfig.build.json",
     }),
     filesize(),
   ],

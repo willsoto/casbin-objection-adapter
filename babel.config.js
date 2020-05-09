@@ -1,7 +1,7 @@
 /* eslint-env node */
 
 const presets = [
-  "@babel/preset-typescript",
+  ["@babel/preset-typescript"],
   [
     "@babel/preset-env",
     {

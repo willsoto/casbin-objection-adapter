@@ -1,15 +1,10 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
-    "declaration": true,
-    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
     "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "forceConsistentCasingInFileNames": true,
     "lib": ["esnext"],
     "module": "commonjs",
-    "outDir": "./dist",
-    "removeComments": true,
+    "rootDir": "src",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,

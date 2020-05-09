@@ -1,12 +1,21 @@
 {
-  "name": "@willsoto/node-typescript-pkg",
+  "name": "@willsoto/casbin-objection-adapter",
   "version": "0.1.0",
-  "private": true,
   "description": "",
-  "keywords": [],
+  "keywords": [
+    "casbin",
+    "objection",
+    "knex",
+    "adapter"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "github:willsoto/casbin-objection-adapter"
+  },
   "license": "Apache-2.0",
   "author": "Will Soto <willsoto@users.noreply.github.com> (https://github.com/willsoto)",
-  "main": "index.js",
+  "exports": "./dist/esm.js",
+  "main": "./dist/cjs.js",
   "typings": "./typings/index.d.ts",
   "files": [
     "dist",
@@ -48,8 +57,8 @@
     "@babel/preset-typescript": "~7.9.0",
     "@commitlint/cli": "~8.3.5",
     "@commitlint/config-conventional": "~8.3.4",
-    "@rollup/plugin-babel": "~5.0.0",
     "@rollup/plugin-typescript": "~4.1.1",
+    "@sindresorhus/slugify": "~1.0.0",
     "@types/jest": "~25.2.1",
     "@types/node": "~13.13.5",
     "@typescript-eslint/eslint-plugin": "~2.31.0",
@@ -69,10 +78,10 @@
     "prettier-plugin-packagejson": "~2.2.2",
     "rimraf": "~3.0.2",
     "rollup": "~2.8.2",
-    "rollup-plugin-eslint": "~7.0.0",
     "rollup-plugin-filesize": "~8.0.2",
     "sqlite3": "~4.2.0",
     "standard-version": "~8.0.0",
+    "tslib": "~1.11.2",
     "typescript": "~3.8.3",
     "winston": "~3.2.1"
   },
