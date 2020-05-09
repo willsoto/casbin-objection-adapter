@@ -8,10 +8,26 @@ on:
     branches:
       - master
 
+env:
+  NODE_ENV: "ci"
+  POSTGRES_USER: "casbin"
+  POSTGRES_DB: "casbin"
+  POSTGRES_PASSWORD: "casbin"
+  POSTGRES_HOST: "postgres"
+
 jobs:
   test:
     name: Test on node ${{ matrix.node-version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    services:
+      postgres:
+        image: postgres:12-alpine
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_USER: $POSTGRES_USER
+          POSTGRES_DB: $POSTGRES_DB
+          POSTGRES_PASSWORD: $POSTGRES_PASSWORD
     strategy:
       matrix:
         node-version: [10, 12]

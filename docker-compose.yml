@@ -1,0 +1,17 @@
+version: "3.7"
+
+services:
+  postgres:
+    restart: "on-failure"
+    image: postgres:12-alpine
+    volumes:
+      - pg-data:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: casbin
+      POSTGRES_DB: casbin
+      POSTGRES_PASSWORD: casbin
+
+volumes:
+  pg-data: {}
