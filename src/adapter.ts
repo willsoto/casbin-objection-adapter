@@ -4,6 +4,10 @@ import * as Knex from "knex";
 import { CasbinRule } from "./model";
 import { Logger, ObjectionAdapterOptions, Policy } from "./types";
 
+/**
+ * Reference implementation:
+ * @see https://github.com/casbin/xorm-adapter/blob/master/adapter.go
+ */
 export class ObjectionAdapter implements Adapter {
   constructor(
     private knex: Knex,
@@ -97,18 +101,30 @@ export class ObjectionAdapter implements Adapter {
     const p = model.model.get("p") ?? new Map();
     const g = model.model.get("g") ?? new Map();
 
-    for (const [ptype, rules] of p) {
-      this.logger.log("Saving policy", ptype, rules);
-      policies.push(this.makePolicy(ptype, rules));
+    for (const [ptype, ast] of p) {
+      for (const rule of ast.policy) {
+        this.logger.log("Saving policy", ptype, rule);
+        policies.push(this.makePolicy(ptype, rule));
+      }
     }
 
-    for (const [ptype, rules] of g) {
-      this.logger.log("Saving policy", ptype, rules);
-      policies.push(this.makePolicy(ptype, rules));
+    for (const [ptype, ast] of g) {
+      for (const rule of ast.policy) {
+        this.logger.log("Saving policy", ptype, rule);
+        policies.push(this.makePolicy(ptype, rule));
+      }
     }
-
     try {
-      await this.CasbinRule.query().insert(policies);
+      // sqlite does not support batch insert
+      if (this.knex.client.config.client === "sqlite3") {
+        await Promise.all(
+          policies.map((policy) => {
+            return this.CasbinRule.query().insert(policy);
+          }),
+        );
+      } else {
+        await this.CasbinRule.query().insert(policies);
+      }
 
       return true;
     } catch (error) {
@@ -125,6 +141,18 @@ export class ObjectionAdapter implements Adapter {
     await this.CasbinRule.query().insert(policy);
   }
 
+  async addPolicies(
+    sec: string,
+    ptype: string,
+    rules: string[][],
+  ): Promise<void> {
+    await Promise.all(
+      rules.map((rule) => {
+        return this.addPolicy(sec, ptype, rule);
+      }),
+    );
+  }
+
   async removePolicy(
     sec: string,
     ptype: string,
@@ -134,7 +162,19 @@ export class ObjectionAdapter implements Adapter {
 
     this.logger.log("Removing policy %O", policy);
 
-    await this.CasbinRule.query().delete().where(policy);
+    await this.CasbinRule.query().delete().skipUndefined().where(policy);
+  }
+
+  async removePolicies(
+    sec: string,
+    ptype: string,
+    rules: string[][],
+  ): Promise<void> {
+    await Promise.all(
+      rules.map((rule) => {
+        return this.removePolicy(sec, ptype, rule);
+      }),
+    );
   }
 
   async removeFilteredPolicy(

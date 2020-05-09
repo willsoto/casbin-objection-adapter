@@ -1,24 +1,14 @@
 import { Enforcer, newEnforcer } from "casbin";
-import Knex from "knex";
+import * as objection from "objection";
 import * as path from "path";
-import { ObjectionAdapter } from "../src";
-import { CasbinRule } from "../src/model";
+import { CasbinRule, ObjectionAdapter } from "../src";
+import { makeKnex } from "./utils";
 
-const knex = Knex({
-  client: "sqlite3",
-  asyncStackTraces: true,
-  connection: {
-    filename: path.join(process.cwd(), "casbin_test.sqlite"),
-  },
-});
-
-// knex.on("query", console.log);
-
-CasbinRule.knex(knex);
-
-describe("ObjectionAdapterOptions", () => {
+describe("ObjectionAdapter", () => {
   let adapter: ObjectionAdapter;
   let enforcer: Enforcer;
+
+  const knex = makeKnex(__dirname);
 
   beforeEach(async () => {
     adapter = await ObjectionAdapter.newAdapter(knex);
@@ -38,10 +28,6 @@ describe("ObjectionAdapterOptions", () => {
     await knex.destroy();
   });
 
-  const subject = "alice"; // the user that wants to access a resource.
-  const resource = "data1"; // the resource that is going to be accessed.
-  const action = "read"; // the operation that the user performs on the resource.
-
   test("it creates the table by default", async () => {
     const defaultTableName = adapter["options"].tableName;
     const hasTable = await knex.schema.hasTable(defaultTableName);
@@ -49,39 +35,73 @@ describe("ObjectionAdapterOptions", () => {
     expect(hasTable).toBe(true);
   });
 
-  test("it correctly enforces the policies", async () => {
-    await enforcer.addPolicy("alice", "data1", "read");
+  test("does not create the table automatically if specified", async () => {
+    await adapter.dropTable();
 
-    const result = await enforcer.enforce(subject, resource, action);
+    const defaultTableName = adapter["options"].tableName;
 
-    expect(result).toBe(true);
+    adapter = await ObjectionAdapter.newAdapter(knex, {
+      createTable: false,
+    });
+
+    const hasTable = await knex.schema.hasTable(defaultTableName);
+
+    expect(hasTable).toBe(false);
   });
 
-  test("returns false if the rule already exists", async () => {
-    let result = await enforcer.addPolicy("alice", "data1", "read");
+  test("uses the custom model provided by the user to create the table", async () => {
+    await adapter.dropTable();
+    const defaultTableName = adapter["options"].tableName;
 
-    expect(result).toBe(true);
+    class MyCustomPolicy extends objection.Model {
+      static tableName = "my_custom_policies";
 
-    result = await enforcer.addPolicy("alice", "data1", "read");
+      ptype!: string;
+      v0!: string;
+      v1!: string;
+      v2!: string;
+      v3!: string;
+      v4!: string;
+      v5!: string;
+    }
 
-    expect(result).toBe(false);
+    adapter = await ObjectionAdapter.newAdapter(knex, {
+      modelClass: MyCustomPolicy,
+    });
+
+    const hasCustomTable = await knex.schema.hasTable(MyCustomPolicy.tableName);
+    const hasTable = await knex.schema.hasTable(defaultTableName);
+
+    expect(hasCustomTable).toBe(true);
+    expect(hasTable).toBe(false);
   });
 
-  test("implements RemoveFilteredPolicy", async () => {
-    await enforcer.addPolicy("alice", "data1", "read");
+  test("can correctly load policies from the database", async () => {
+    enforcer.enableAutoSave(false);
 
-    let result = await enforcer.enforce(subject, resource, action);
-    let hasPolicy = await enforcer.hasPolicy(subject, resource, action);
+    await enforcer.addPolicies([
+      ["alice", "data1", "read"],
+      ["bob", "data2", "write"],
+    ]);
+    await expect(enforcer.savePolicy()).resolves.toBe(true);
 
-    expect(hasPolicy).toBe(true);
-    expect(result).toBe(true);
+    // reload the policy to ensure changes were persisted
+    await enforcer.loadPolicy();
 
-    await enforcer.removeFilteredPolicy(0, subject, resource, action);
+    await expect(enforcer.hasPolicy("alice", "data1", "read")).resolves.toBe(
+      true,
+    );
+    await expect(enforcer.hasPolicy("bob", "data2", "write")).resolves.toBe(
+      true,
+    );
+  });
 
-    hasPolicy = await enforcer.hasPolicy(subject, resource, action);
-    result = await enforcer.enforce(subject, resource, action);
+  test("supports more advanced policies", async () => {
+    const policy = ["alice", "data1", "read", "write", "copy"];
 
-    expect(hasPolicy).toBe(false);
-    expect(result).toBe(false);
+    await enforcer.addPolicy(...policy);
+
+    await expect(CasbinRule.query()).resolves.toHaveLength(1);
+    await expect(enforcer.hasPolicy(...policy)).resolves.toBe(true);
   });
 });
