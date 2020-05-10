@@ -32,18 +32,15 @@ pnpm add @willsoto/casbin-objection-adapter
 
 See [the Casbin adapters documentation](https://casbin.org/docs/en/adapters) for more information.
 
-```ts
+```js
 import { newEnforcer } from "casbin";
-import {ObjectionAdapter} from "@willsoto/casbin-objection-adapter";
+import { ObjectionAdapter } from "@willsoto/casbin-objection-adapter";
 
 // All configuration is optional
 const adapter = await ObjectionAdapter.newAdapter();
 
 // Create the enforcer with the given model
-const enforcer = await newEnforcer(
-  "basic_model.conf",
-  adapter,
-);
+const enforcer = await newEnforcer("basic_model.conf", adapter);
 
 // Supports auto-save
 // See: https://casbin.org/docs/en/adapters#autosave
