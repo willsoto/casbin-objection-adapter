@@ -17,10 +17,10 @@ export class ObjectionAdapter implements Adapter {
   }
 
   static async newAdapter(
-    knex: Knex,
     options: ObjectionAdapterOptions = {},
   ): Promise<ObjectionAdapter> {
     const modelClass = options.modelClass ?? CasbinRule;
+    const knex = modelClass.knex();
 
     const opts = {
       tableName: modelClass.tableName,
@@ -77,7 +77,7 @@ export class ObjectionAdapter implements Adapter {
   async loadPolicy(model: Model): Promise<void> {
     this.logger.log("Loading policy");
 
-    const policies = await this.CasbinRule.query();
+    const policies = await this.modelClass.query();
 
     this.logger.log("Found policies %O", policies);
 
@@ -119,11 +119,11 @@ export class ObjectionAdapter implements Adapter {
       if (this.knex.client.config.client === "sqlite3") {
         await Promise.all(
           policies.map((policy) => {
-            return this.CasbinRule.query().insert(policy);
+            return this.modelClass.query().insert(policy);
           }),
         );
       } else {
-        await this.CasbinRule.query().insert(policies);
+        await this.modelClass.query().insert(policies);
       }
 
       return true;
@@ -138,7 +138,7 @@ export class ObjectionAdapter implements Adapter {
 
     this.logger.log("Adding policy %O", policy);
 
-    await this.CasbinRule.query().insert(policy);
+    await this.modelClass.query().insert(policy);
   }
 
   async addPolicies(
@@ -162,7 +162,7 @@ export class ObjectionAdapter implements Adapter {
 
     this.logger.log("Removing policy %O", policy);
 
-    await this.CasbinRule.query().delete().skipUndefined().where(policy);
+    await this.modelClass.query().delete().skipUndefined().where(policy);
   }
 
   async removePolicies(
@@ -215,7 +215,7 @@ export class ObjectionAdapter implements Adapter {
 
     this.logger.log("Removing policy %O", policy);
 
-    await this.CasbinRule.query().delete().where(policy);
+    await this.modelClass.query().delete().where(policy);
   }
 
   private makePolicy(ptype: string, rule: string[]): Policy {
@@ -269,12 +269,12 @@ export class ObjectionAdapter implements Adapter {
     Helper.loadPolicyLine(policyLine.join(prefix), model);
   }
 
-  private get CasbinRule(): typeof CasbinRule {
+  private get modelClass(): typeof CasbinRule {
     return this.options.modelClass;
   }
 
   private get tableName(): string {
-    return this.options.tableName;
+    return this.modelClass.tableName;
   }
 
   private get logger(): Logger {

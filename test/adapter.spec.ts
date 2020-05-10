@@ -11,7 +11,7 @@ describe("ObjectionAdapter", () => {
   const knex = makeAndConfigureDatabase(__dirname);
 
   beforeEach(async () => {
-    adapter = await ObjectionAdapter.newAdapter(knex);
+    adapter = await ObjectionAdapter.newAdapter();
 
     enforcer = await newEnforcer(
       path.join(__dirname, "basic_model.conf"),
@@ -29,7 +29,7 @@ describe("ObjectionAdapter", () => {
   });
 
   test("it creates the table by default", async () => {
-    const defaultTableName = adapter["options"].tableName;
+    const defaultTableName = adapter["tableName"];
     const hasTable = await knex.schema.hasTable(defaultTableName);
 
     expect(hasTable).toBe(true);
@@ -38,9 +38,9 @@ describe("ObjectionAdapter", () => {
   test("does not create the table automatically if specified", async () => {
     await adapter.dropTable();
 
-    const defaultTableName = adapter["options"].tableName;
+    const defaultTableName = adapter["tableName"];
 
-    adapter = await ObjectionAdapter.newAdapter(knex, {
+    adapter = await ObjectionAdapter.newAdapter({
       createTable: false,
     });
 
@@ -51,7 +51,7 @@ describe("ObjectionAdapter", () => {
 
   test("uses the custom model provided by the user to create the table", async () => {
     await adapter.dropTable();
-    const defaultTableName = adapter["options"].tableName;
+    const defaultTableName = adapter["tableName"];
 
     class MyCustomPolicy extends objection.Model {
       static tableName = "my_custom_policies";
@@ -65,7 +65,7 @@ describe("ObjectionAdapter", () => {
       v5!: string;
     }
 
-    adapter = await ObjectionAdapter.newAdapter(knex, {
+    adapter = await ObjectionAdapter.newAdapter({
       modelClass: MyCustomPolicy,
     });
 

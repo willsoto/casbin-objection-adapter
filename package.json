@@ -6,7 +6,8 @@
     "casbin",
     "objection",
     "knex",
-    "adapter"
+    "casbin-database",
+    "casbin-adapter"
   ],
   "repository": {
     "type": "git",
