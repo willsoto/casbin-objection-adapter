@@ -3,15 +3,14 @@ import * as path from "path";
 import { CasbinRule, ObjectionAdapter } from "../../src";
 import { makeAndConfigureDatabase } from "../utils";
 
-describe("Enforcer (RBAC)", () => {
+describe("ObjectionAdapter (ACL)", () => {
   let adapter: ObjectionAdapter;
   let enforcer: Enforcer;
 
   const policies = {
     alice: ["alice", "data1", "read"],
     bob: ["bob", "data2", "write"],
-    data2AdminRead: ["data2_admin", "data2", "read"],
-    data2AdminWrite: ["data2_admin", "data2", "write"],
+    stark: ["tony", "data3", "root"],
   };
 
   const knex = makeAndConfigureDatabase(__dirname);
@@ -20,18 +19,12 @@ describe("Enforcer (RBAC)", () => {
     adapter = await ObjectionAdapter.newAdapter(knex);
 
     enforcer = await newEnforcer(
-      path.join(__dirname, "rbac_model.conf"),
+      path.join(__dirname, "basic_with_root_model.conf"),
       adapter,
     );
     enforcer.enableAutoSave(true);
 
-    await enforcer.addPolicies([
-      policies.alice,
-      policies.bob,
-      policies.data2AdminRead,
-      policies.data2AdminWrite,
-    ]);
-    await enforcer.addRoleForUser("alice", "data2_admin");
+    await enforcer.addPolicies([policies.alice, policies.bob, policies.stark]);
   });
 
   afterEach(async () => {
@@ -43,18 +36,21 @@ describe("Enforcer (RBAC)", () => {
   });
 
   test("it correctly enforces the policies", async () => {
-    await expect(enforcer.enforce("alice", "data2", "read")).resolves.toBe(
+    await expect(enforcer.enforce("alice", "data1", "read")).resolves.toBe(
       true,
     );
-    await expect(enforcer.enforce("bob", "data2", "write")).resolves.toBe(true);
     await expect(enforcer.enforce("bob", "data1", "read")).resolves.toBe(false);
+    await expect(enforcer.enforce("tony", "data1", "root")).resolves.toBe(
+      false,
+    );
+    await expect(enforcer.enforce("tony", "data3", "root")).resolves.toBe(true);
   });
 
   test("enforcer.getAllSubjects", async () => {
     await expect(enforcer.getAllSubjects()).resolves.toEqual([
       "alice",
       "bob",
-      "data2_admin",
+      "tony",
     ]);
   });
 
@@ -62,56 +58,61 @@ describe("Enforcer (RBAC)", () => {
     await expect(enforcer.getAllNamedSubjects("p")).resolves.toEqual([
       "alice",
       "bob",
-      "data2_admin",
+      "tony",
     ]);
   });
 
   test("enforcer.getAllObjects", async () => {
-    await expect(enforcer.getAllObjects()).resolves.toEqual(["data1", "data2"]);
+    await expect(enforcer.getAllObjects()).resolves.toEqual([
+      "data1",
+      "data2",
+      "data3",
+    ]);
   });
 
   test("enforcer.getAllNamedObjects", async () => {
     await expect(enforcer.getAllNamedObjects("p")).resolves.toEqual([
       "data1",
       "data2",
+      "data3",
     ]);
-    await expect(enforcer.getAllNamedObjects("g")).resolves.toEqual([]);
   });
 
   test("enforcer.getAllActions", async () => {
-    await expect(enforcer.getAllActions()).resolves.toEqual(["read", "write"]);
+    await expect(enforcer.getAllActions()).resolves.toEqual([
+      "read",
+      "write",
+      "root",
+    ]);
   });
 
   test("enforcer.getAllNamedActions", async () => {
     await expect(enforcer.getAllNamedActions("p")).resolves.toEqual([
       "read",
       "write",
+      "root",
     ]);
   });
 
   test("enforcer.getAllRoles", async () => {
-    await expect(enforcer.getAllRoles()).resolves.toEqual(["data2_admin"]);
+    await expect(enforcer.getAllRoles()).resolves.toEqual([]);
   });
 
   test("enforcer.getAllNamedRoles", async () => {
     await expect(enforcer.getAllNamedRoles("p")).resolves.toEqual([]);
-    await expect(enforcer.getAllNamedRoles("g")).resolves.toEqual([
-      "data2_admin",
-    ]);
   });
 
   test("enforcer.getPolicy", async () => {
     await expect(enforcer.getPolicy()).resolves.toEqual([
       policies.alice,
       policies.bob,
-      policies.data2AdminRead,
-      policies.data2AdminWrite,
+      policies.stark,
     ]);
   });
 
   test("enforcer.getFilteredPolicy", async () => {
     await expect(enforcer.getFilteredPolicy(0, "alice")).resolves.toEqual([
-      ["alice", "data1", "read"],
+      policies.alice,
     ]);
   });
 
@@ -119,21 +120,18 @@ describe("Enforcer (RBAC)", () => {
     await expect(enforcer.getNamedPolicy("p")).resolves.toEqual([
       policies.alice,
       policies.bob,
-      policies.data2AdminRead,
-      policies.data2AdminWrite,
+      policies.stark,
     ]);
   });
 
   test("enforcer.getFilteredNamedPolicy", async () => {
     await expect(
       enforcer.getFilteredNamedPolicy("p", 0, "bob"),
-    ).resolves.toEqual([["bob", "data2", "write"]]);
+    ).resolves.toEqual([policies.bob]);
   });
 
   test("enforcer.getGroupingPolicy", async () => {
-    await expect(enforcer.getGroupingPolicy()).resolves.toEqual([
-      ["alice", "data2_admin"],
-    ]);
+    await expect(enforcer.getGroupingPolicy()).resolves.toEqual([]);
   });
 
   test("enforcer.getNamedGroupingPolicy", async () => {
@@ -147,7 +145,9 @@ describe("Enforcer (RBAC)", () => {
   });
 
   test("enforcer.hasPolicy", async () => {
-    await expect(enforcer.hasPolicy(...policies.bob)).resolves.toEqual(true);
+    await expect(enforcer.hasPolicy("alice", "data1", "read")).resolves.toEqual(
+      true,
+    );
 
     await expect(
       enforcer.hasPolicy("alice", "data2", "write"),
@@ -156,7 +156,7 @@ describe("Enforcer (RBAC)", () => {
 
   test("enforcer.hasNamedPolicy", async () => {
     await expect(
-      enforcer.hasNamedPolicy("p", ...policies.alice),
+      enforcer.hasNamedPolicy("p", "alice", "data1", "read"),
     ).resolves.toEqual(true);
 
     await expect(
@@ -170,7 +170,7 @@ describe("Enforcer (RBAC)", () => {
       const rules = await CasbinRule.query();
 
       expect(result).toBe(true);
-      expect(rules).toHaveLength(6);
+      expect(rules).toHaveLength(4);
     });
 
     test("returns false if the rule already exists", async () => {
@@ -178,26 +178,26 @@ describe("Enforcer (RBAC)", () => {
       const rules = await CasbinRule.query();
 
       expect(result).toBe(false);
-      expect(rules).toHaveLength(5);
+      expect(rules).toHaveLength(3);
     });
   });
 
   describe("enforcer.addPolicies", () => {
     test("adds the new policies and saves them if there are no conflicts", async () => {
       const result = await enforcer.addPolicies([
-        ["admin", "domain3", "data3", "read"],
-        ["admin", "domain3", "data3", "write"],
+        ["thor", "data1", "write"],
+        ["cap", "data3", "read"],
       ]);
       const rules = await CasbinRule.query();
 
       expect(result).toBe(true);
-      expect(rules).toHaveLength(7);
+      expect(rules).toHaveLength(5);
     });
 
     test("returns false if any of the policies already exist", async () => {
       const result = await enforcer.addPolicies([
-        ["admin", "domain3", "data3", "read"],
-        ["admin", "domain3", "data3", "write"],
+        ["thor", "data1", "write"],
+        ["cap", "data3", "read"],
         policies.alice,
       ]);
 
@@ -206,13 +206,13 @@ describe("Enforcer (RBAC)", () => {
 
     test("does not persist anything if a policy already exists", async () => {
       await enforcer.addPolicies([
-        ["admin", "domain3", "data3", "read"],
-        ["admin", "domain3", "data3", "write"],
+        ["thor", "data1", "write"],
+        ["cap", "data3", "read"],
         policies.alice,
       ]);
       const rules = await CasbinRule.query();
 
-      expect(rules).toHaveLength(5);
+      expect(rules).toHaveLength(3);
     });
   });
 
@@ -220,46 +220,42 @@ describe("Enforcer (RBAC)", () => {
     test("adds the new policy and saves it", async () => {
       const result = await enforcer.addNamedPolicy(
         "p",
-        "admin",
-        "domain3",
-        "data3",
-        "read",
+        "thor",
+        "data1",
+        "write",
       );
       const rules = await CasbinRule.query();
 
       expect(result).toBe(true);
-      expect(rules).toHaveLength(6);
+      expect(rules).toHaveLength(4);
     });
 
     test("returns false if the rule already exists", async () => {
-      const result = await enforcer.addNamedPolicy(
-        "p",
-        ...policies.data2AdminRead,
-      );
+      const result = await enforcer.addNamedPolicy("p", ...policies.alice);
       const rules = await CasbinRule.query();
 
       expect(result).toBe(false);
-      expect(rules).toHaveLength(5);
+      expect(rules).toHaveLength(3);
     });
   });
 
   describe("enforcer.addNamedPolicies", () => {
     test("adds the new policies and saves them if there are no conflicts", async () => {
       const result = await enforcer.addNamedPolicies("p", [
-        ["admin", "domain3", "data3", "read"],
-        ["admin", "domain3", "data3", "write"],
+        ["thor", "data1", "write"],
+        ["cap", "data3", "read"],
       ]);
       const rules = await CasbinRule.query();
 
       expect(result).toBe(true);
-      expect(rules).toHaveLength(7);
+      expect(rules).toHaveLength(5);
     });
 
     test("returns false if any of the policies already exist", async () => {
       const result = await enforcer.addNamedPolicies("p", [
-        ["admin", "domain3", "data3", "read"],
-        ["admin", "domain3", "data3", "write"],
-        policies.bob,
+        ["thor", "data1", "write"],
+        ["cap", "data3", "read"],
+        policies.alice,
       ]);
 
       expect(result).toBe(false);
@@ -267,24 +263,26 @@ describe("Enforcer (RBAC)", () => {
 
     test("does not persist anything if a policy already exists", async () => {
       await enforcer.addNamedPolicies("p", [
-        ["admin", "domain3", "data3", "read"],
-        ["admin", "domain3", "data3", "write"],
-        policies.data2AdminWrite,
+        ["thor", "data1", "write"],
+        ["cap", "data3", "read"],
+        policies.alice,
       ]);
       const rules = await CasbinRule.query();
 
-      expect(rules).toHaveLength(5);
+      expect(rules).toHaveLength(3);
     });
   });
 
   test("enforcer.removePolicy", async () => {
-    await expect(enforcer.removePolicy(...policies.bob)).resolves.toEqual(true);
-
-    await expect(enforcer.removePolicy(...policies.bob)).resolves.toEqual(
-      false,
+    await expect(enforcer.removePolicy(...policies.alice)).resolves.toEqual(
+      true,
     );
 
-    await expect(CasbinRule.query()).resolves.toHaveLength(4);
+    await expect(
+      enforcer.removePolicy("alice", "data2", "write"),
+    ).resolves.toEqual(false);
+
+    await expect(CasbinRule.query()).resolves.toHaveLength(2);
   });
 
   test("enforcer.removePolicies", async () => {
@@ -292,11 +290,11 @@ describe("Enforcer (RBAC)", () => {
       enforcer.removePolicies([policies.alice, policies.bob]),
     ).resolves.toEqual(true);
 
-    await expect(enforcer.removePolicies([policies.alice])).resolves.toEqual(
-      false,
-    );
+    await expect(
+      enforcer.removePolicies([["alice", "data2", "write"]]),
+    ).resolves.toEqual(false);
 
-    await expect(CasbinRule.query()).resolves.toHaveLength(3);
+    await expect(CasbinRule.query()).resolves.toHaveLength(1);
   });
 
   test("enforcer.removeFilteredPolicy", async () => {
@@ -307,8 +305,8 @@ describe("Enforcer (RBAC)", () => {
     let result = await enforcer.enforce(subject, resource, action);
     let hasPolicy = await enforcer.hasPolicy(subject, resource, action);
 
-    expect(result).toBe(true);
     expect(hasPolicy).toBe(true);
+    expect(result).toBe(true);
 
     await enforcer.removeFilteredPolicy(0, subject, resource, action);
 
@@ -319,15 +317,30 @@ describe("Enforcer (RBAC)", () => {
     expect(result).toBe(false);
   });
 
-  test("enforcer.removeFilteredGroupingPolicy", async () => {
+  test("enforcer.removeNamedPolicy", async () => {
     await expect(
-      enforcer.removeFilteredGroupingPolicy(0, "alice"),
+      enforcer.removeNamedPolicy("p", ...policies.alice),
+    ).resolves.toBe(true);
+    await expect(
+      enforcer.removeNamedPolicy("p", "thor", "data", "write"),
+    ).resolves.toBe(false);
+  });
+
+  test("enforcer.removeNamedPolicies", async () => {
+    await expect(
+      enforcer.removeNamedPolicies("p", [policies.alice, policies.bob]),
     ).resolves.toBe(true);
 
-    await enforcer.addGroupingPolicy("group1", "data2_admin");
+    await expect(CasbinRule.query()).resolves.toHaveLength(1);
 
     await expect(
-      enforcer.removeFilteredGroupingPolicy(0, "alice"),
+      enforcer.removeNamedPolicies("p", [["thor", "data", "write"]]),
     ).resolves.toBe(false);
+  });
+
+  test("enforcer.removeFilteredNamedPolicy", async () => {
+    await expect(
+      enforcer.removeFilteredNamedPolicy("p", 0, ...policies.alice),
+    ).resolves.toBe(true);
   });
 });
