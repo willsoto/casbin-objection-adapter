@@ -2,7 +2,7 @@ import Knex from "knex";
 import { Model } from "objection";
 import * as path from "path";
 
-export function makeKnex(dirname: string): Knex {
+export function makeAndConfigureDatabase(dirname: string): Knex {
   const knex = Knex({
     client: "sqlite3",
     useNullAsDefault: true,

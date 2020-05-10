@@ -2,13 +2,13 @@ import { Enforcer, newEnforcer } from "casbin";
 import * as objection from "objection";
 import * as path from "path";
 import { CasbinRule, ObjectionAdapter } from "../src";
-import { makeKnex } from "./utils";
+import { makeAndConfigureDatabase } from "./utils";
 
 describe("ObjectionAdapter", () => {
   let adapter: ObjectionAdapter;
   let enforcer: Enforcer;
 
-  const knex = makeKnex(__dirname);
+  const knex = makeAndConfigureDatabase(__dirname);
 
   beforeEach(async () => {
     adapter = await ObjectionAdapter.newAdapter(knex);
