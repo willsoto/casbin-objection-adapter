@@ -16,7 +16,7 @@ describe("ObjectionAdapter (ACL)", () => {
   const knex = makeAndConfigureDatabase(__dirname);
 
   beforeEach(async () => {
-    adapter = await ObjectionAdapter.newAdapter();
+    adapter = await ObjectionAdapter.newAdapter(knex);
 
     enforcer = await newEnforcer(
       path.join(__dirname, "basic_with_root_model.conf"),

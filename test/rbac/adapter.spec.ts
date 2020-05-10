@@ -17,7 +17,7 @@ describe("ObjectionAdapter (RBAC)", () => {
   const knex = makeAndConfigureDatabase(__dirname);
 
   beforeEach(async () => {
-    adapter = await ObjectionAdapter.newAdapter();
+    adapter = await ObjectionAdapter.newAdapter(knex);
 
     enforcer = await newEnforcer(
       path.join(__dirname, "rbac_model.conf"),

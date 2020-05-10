@@ -33,11 +33,16 @@ pnpm add @willsoto/casbin-objection-adapter
 See [the Casbin adapters documentation](https://casbin.org/docs/en/adapters) for more information.
 
 ```js
+import Knex from "knex";
 import { newEnforcer } from "casbin";
 import { ObjectionAdapter } from "@willsoto/casbin-objection-adapter";
 
+const knex = Knex({
+  /* regular knex options */
+});
+
 // All configuration is optional
-const adapter = await ObjectionAdapter.newAdapter();
+const adapter = await ObjectionAdapter.newAdapter(knex, {});
 
 // Create the enforcer with the given model
 const enforcer = await newEnforcer("basic_model.conf", adapter);

@@ -17,10 +17,11 @@ export class ObjectionAdapter implements Adapter {
   }
 
   static async newAdapter(
+    knex: Knex,
     options: ObjectionAdapterOptions = {},
   ): Promise<ObjectionAdapter> {
     const modelClass = options.modelClass ?? CasbinRule;
-    const knex = modelClass.knex();
+    modelClass.knex(knex);
 
     const opts = {
       tableName: modelClass.tableName,

@@ -11,7 +11,7 @@ describe("ObjectionAdapter", () => {
   const knex = makeAndConfigureDatabase(__dirname);
 
   beforeEach(async () => {
-    adapter = await ObjectionAdapter.newAdapter();
+    adapter = await ObjectionAdapter.newAdapter(knex);
 
     enforcer = await newEnforcer(
       path.join(__dirname, "basic_model.conf"),
@@ -40,7 +40,7 @@ describe("ObjectionAdapter", () => {
 
     const defaultTableName = adapter["tableName"];
 
-    adapter = await ObjectionAdapter.newAdapter({
+    adapter = await ObjectionAdapter.newAdapter(knex, {
       createTable: false,
     });
 
@@ -65,7 +65,7 @@ describe("ObjectionAdapter", () => {
       v5!: string;
     }
 
-    adapter = await ObjectionAdapter.newAdapter({
+    adapter = await ObjectionAdapter.newAdapter(knex, {
       modelClass: MyCustomPolicy,
     });
 

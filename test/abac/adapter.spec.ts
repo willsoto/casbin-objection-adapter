@@ -22,7 +22,7 @@ describe("ObjectionAdapter (ABAC)", () => {
   }
 
   beforeEach(async () => {
-    adapter = await ObjectionAdapter.newAdapter();
+    adapter = await ObjectionAdapter.newAdapter(knex);
 
     enforcer = await newEnforcer(
       path.join(__dirname, "abac_model.conf"),
