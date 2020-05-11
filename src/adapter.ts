@@ -24,7 +24,6 @@ export class ObjectionAdapter implements Adapter {
     modelClass.knex(knex);
 
     const opts = {
-      tableName: modelClass.tableName,
       createTable: true,
       modelClass,
       logger: {
@@ -115,6 +114,7 @@ export class ObjectionAdapter implements Adapter {
         policies.push(this.makePolicy(ptype, rule));
       }
     }
+
     try {
       // sqlite does not support batch insert
       if (this.knex.client.config.client === "sqlite3") {
@@ -216,7 +216,7 @@ export class ObjectionAdapter implements Adapter {
 
     this.logger.log("Removing policy %O", policy);
 
-    await this.modelClass.query().delete().where(policy);
+    await this.modelClass.query().delete().skipUndefined().where(policy);
   }
 
   private makePolicy(ptype: string, rule: string[]): Policy {
