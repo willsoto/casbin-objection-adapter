@@ -1,7 +1,0 @@
-{
-  "singleQuote": false,
-  "trailingComma": "all",
-  "arrowParens": "always",
-  "semi": true,
-  "plugins": ["prettier-plugin-organize-imports", "prettier-plugin-packagejson"]
-}
