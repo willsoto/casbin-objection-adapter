@@ -69,7 +69,7 @@
     "@typescript-eslint/eslint-plugin": "~2.34.0",
     "@typescript-eslint/parser": "~2.34.0",
     "babel-jest": "~26.0.1",
-    "casbin": "~4.7.1",
+    "casbin": "~5.0.0",
     "eslint": "~7.0.0",
     "eslint-config-prettier": "~6.11.0",
     "eslint-plugin-jest": "~23.13.1",
