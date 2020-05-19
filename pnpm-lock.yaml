@@ -11,7 +11,7 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 2.34.0_d88701cb3afea3dfd694e8456ddba8b7
   '@typescript-eslint/parser': 2.34.0_eslint@7.0.0+typescript@3.9.2
   babel-jest: 26.0.1_@babel+core@7.9.6
-  casbin: 4.7.1
+  casbin: 5.0.0
   eslint: 7.0.0
   eslint-config-prettier: 6.11.0_eslint@7.0.0
   eslint-plugin-jest: 23.13.1_eslint@7.0.0+typescript@3.9.2
@@ -2282,7 +2282,7 @@ packages:
       node: 6.* || 8.* || >= 10.*
     resolution:
       integrity: sha512-PiT/hQmTonHhl/HFGN+Lx3JJUznrVYJ3+AQsnthneZbvW7x+f08Tk7yLJTLEOUvBTbduLeeBkxEaYXUOUrRq6g==
-  /casbin/4.7.1:
+  /casbin/5.0.0:
     dependencies:
       await-lock: 2.0.1
       expression-eval: 2.1.0
@@ -2291,7 +2291,7 @@ packages:
       micromatch: 4.0.2
     dev: true
     resolution:
-      integrity: sha512-oymmSoJWRLCAqGmvfkiM1rNSX4EApecQ7hwhDCtR0QlheT0Ihx7aNEE6x7AJhlxAMB86c5tYeDZOwbcFb4QhMQ==
+      integrity: sha512-mxc0voyWZLu/Wgm+kfn18Wc9bFzP8IAc8jVxYIqkyoZRqSa7eUmS73aU3S39y13XDssacVePsSNmxCjnnc+qRA==
   /caseless/0.12.0:
     dev: true
     resolution:
@@ -8627,7 +8627,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ~2.34.0
   '@typescript-eslint/parser': ~2.34.0
   babel-jest: ~26.0.1
-  casbin: ~4.7.1
+  casbin: ~5.0.0
   eslint: ~7.0.0
   eslint-config-prettier: ~6.11.0
   eslint-plugin-jest: ~23.13.1
