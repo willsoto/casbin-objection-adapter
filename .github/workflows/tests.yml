@@ -28,5 +28,5 @@ jobs:
       - run: volta install pnpm
       - run: pnpm install
       - run: pnpm run lint
-      - run: pnpm run test:cov
+      - run: pnpm run test:coverage
       - run: pnpm run build
