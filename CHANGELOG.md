@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://github.com/willsoto/casbin-objection-adapter/compare/v0.2.0...v0.2.1) (2020-06-12)
+
+
+### Bug Fixes
+
+* **package:** use conditional exports for esm vs cjs modules ([34e285b](https://github.com/willsoto/casbin-objection-adapter/commit/34e285bbb7f242e94abe49339d67422d402692d4)), closes [#2](https://github.com/willsoto/casbin-objection-adapter/issues/2)
+
 ## [0.2.0](https://github.com/willsoto/casbin-objection-adapter/compare/v0.1.1...v0.2.0) (2020-05-10)
 
 
