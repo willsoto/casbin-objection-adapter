@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { Adapter, Helper, Model } from "casbin";
-import * as Knex from "knex";
+import Knex from "knex";
 import { CasbinRule } from "./model";
 import { Logger, ObjectionAdapterOptions, Policy } from "./types";
 

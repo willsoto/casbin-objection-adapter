@@ -3,10 +3,10 @@ name: tests
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 env:
   NODE_ENV: "ci"
@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [10, 12, 14]
+        node-version: [12, 14]
         os: [ubuntu-latest]
 
     steps:
@@ -25,8 +25,7 @@ jobs:
       - uses: volta-cli/action@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: volta install pnpm
-      - run: pnpm install
-      - run: pnpm run lint
-      - run: pnpm run test:coverage
-      - run: pnpm run build
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test:cov
+      - run: npm run build

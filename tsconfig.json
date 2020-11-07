@@ -1,15 +1,21 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "./",
+    "outDir": "./dist",
     "esModuleInterop": true,
-    "lib": ["esnext"],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "declaration": true,
+    "declarationMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["es2018"],
     "module": "commonjs",
-    "rootDir": "src",
+    "removeComments": false,
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es2019"
+    "target": "es2018"
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "*.js"],
+  "include": ["src/**/*.ts", "test/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

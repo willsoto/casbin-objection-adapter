@@ -1,4 +1,4 @@
-import * as objection from "objection";
+import objection from "objection";
 
 /**
  * CasbinRule represents a single rule/policy.

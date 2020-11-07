@@ -28,5 +28,6 @@ lerna-debug.log*
 
 /typings
 /docs
+/temp
 
 *.sqlite

@@ -1,16 +1,21 @@
 import { Enforcer, newEnforcer } from "casbin";
-import * as objection from "objection";
-import * as path from "path";
+import { expect } from "chai";
+import Knex from "knex";
+import objection from "objection";
+import path from "path";
 import { CasbinRule, ObjectionAdapter } from "../src";
 import { makeAndConfigureDatabase } from "./utils";
 
-describe("ObjectionAdapter", () => {
+describe("ObjectionAdapter", function () {
   let adapter: ObjectionAdapter;
   let enforcer: Enforcer;
+  let knex: Knex;
 
-  const knex = makeAndConfigureDatabase(__dirname);
+  before(function () {
+    knex = makeAndConfigureDatabase(__dirname);
+  });
 
-  beforeEach(async () => {
+  beforeEach(async function () {
     adapter = await ObjectionAdapter.newAdapter(knex);
 
     enforcer = await newEnforcer(
@@ -20,22 +25,22 @@ describe("ObjectionAdapter", () => {
     enforcer.enableAutoSave(true);
   });
 
-  afterEach(async () => {
+  afterEach(async function () {
     await adapter.dropTable();
   });
 
-  afterAll(async () => {
+  after(async function () {
     await knex.destroy();
   });
 
-  test("it creates the table by default", async () => {
+  it("it creates the table by default", async function () {
     const defaultTableName = adapter["tableName"];
     const hasTable = await knex.schema.hasTable(defaultTableName);
 
-    expect(hasTable).toBe(true);
+    expect(hasTable).to.eql(true);
   });
 
-  test("does not create the table automatically if specified", async () => {
+  it("does not create the table automatically if specified", async function () {
     await adapter.dropTable();
 
     const defaultTableName = adapter["tableName"];
@@ -46,10 +51,10 @@ describe("ObjectionAdapter", () => {
 
     const hasTable = await knex.schema.hasTable(defaultTableName);
 
-    expect(hasTable).toBe(false);
+    expect(hasTable).to.eql(false);
   });
 
-  test("uses the custom model provided by the user to create the table", async () => {
+  it("uses the custom model provided by the user to create the table", async function () {
     await adapter.dropTable();
     const defaultTableName = adapter["tableName"];
 
@@ -72,36 +77,36 @@ describe("ObjectionAdapter", () => {
     const hasCustomTable = await knex.schema.hasTable(MyCustomPolicy.tableName);
     const hasTable = await knex.schema.hasTable(defaultTableName);
 
-    expect(hasCustomTable).toBe(true);
-    expect(hasTable).toBe(false);
+    expect(hasCustomTable).to.eql(true);
+    expect(hasTable).to.eql(false);
   });
 
-  test("can correctly load policies from the database", async () => {
+  it("can correctly load policies from the database", async function () {
     enforcer.enableAutoSave(false);
 
     await enforcer.addPolicies([
       ["alice", "data1", "read"],
       ["bob", "data2", "write"],
     ]);
-    await expect(enforcer.savePolicy()).resolves.toBe(true);
+    await expect(enforcer.savePolicy()).to.eventually.eql(true);
 
     // reload the policy to ensure changes were persisted
     await enforcer.loadPolicy();
 
-    await expect(enforcer.hasPolicy("alice", "data1", "read")).resolves.toBe(
-      true,
-    );
-    await expect(enforcer.hasPolicy("bob", "data2", "write")).resolves.toBe(
+    await expect(
+      enforcer.hasPolicy("alice", "data1", "read"),
+    ).to.eventually.eql(true);
+    await expect(enforcer.hasPolicy("bob", "data2", "write")).to.eventually.eql(
       true,
     );
   });
 
-  test("supports more advanced policies", async () => {
+  it("supports more advanced policies", async function () {
     const policy = ["alice", "data1", "read", "write", "copy"];
 
     await enforcer.addPolicy(...policy);
 
-    await expect(CasbinRule.query()).resolves.toHaveLength(1);
-    await expect(enforcer.hasPolicy(...policy)).resolves.toBe(true);
+    await expect(CasbinRule.query()).to.eventually.have.length(1);
+    await expect(enforcer.hasPolicy(...policy)).to.eventually.eql(true);
   });
 });

@@ -1,11 +1,14 @@
 import { Enforcer, newEnforcer } from "casbin";
-import * as path from "path";
+import { expect } from "chai";
+import Knex from "knex";
+import path from "path";
 import { CasbinRule, ObjectionAdapter } from "../../src";
 import { makeAndConfigureDatabase } from "../utils";
 
-describe("ObjectionAdapter (RBAC)", () => {
+describe("ObjectionAdapter (RBAC)", function () {
   let adapter: ObjectionAdapter;
   let enforcer: Enforcer;
+  let knex: Knex;
 
   const policies = {
     alice: ["alice", "data1", "read"],
@@ -14,9 +17,11 @@ describe("ObjectionAdapter (RBAC)", () => {
     data2AdminWrite: ["data2_admin", "data2", "write"],
   };
 
-  const knex = makeAndConfigureDatabase(__dirname);
+  before(function () {
+    knex = makeAndConfigureDatabase(__dirname);
+  });
 
-  beforeEach(async () => {
+  beforeEach(async function () {
     adapter = await ObjectionAdapter.newAdapter(knex);
 
     enforcer = await newEnforcer(
@@ -34,74 +39,81 @@ describe("ObjectionAdapter (RBAC)", () => {
     await enforcer.addRoleForUser("alice", "data2_admin");
   });
 
-  afterEach(async () => {
+  afterEach(async function () {
     await adapter.dropTable();
   });
 
-  afterAll(async () => {
+  after(async function () {
     await knex.destroy();
   });
 
-  test("it correctly enforces the policies", async () => {
-    await expect(enforcer.enforce("alice", "data2", "read")).resolves.toBe(
+  it("it correctly enforces the policies", async function () {
+    await expect(enforcer.enforce("alice", "data2", "read")).to.eventually.eql(
       true,
     );
-    await expect(enforcer.enforce("bob", "data2", "write")).resolves.toBe(true);
-    await expect(enforcer.enforce("bob", "data1", "read")).resolves.toBe(false);
+    await expect(enforcer.enforce("bob", "data2", "write")).to.eventually.eql(
+      true,
+    );
+    await expect(enforcer.enforce("bob", "data1", "read")).to.eventually.eql(
+      false,
+    );
   });
 
-  test("enforcer.getAllSubjects", async () => {
-    await expect(enforcer.getAllSubjects()).resolves.toEqual([
+  it("enforcer.getAllSubjects", async function () {
+    await expect(enforcer.getAllSubjects()).to.eventually.eql([
       "alice",
       "bob",
       "data2_admin",
     ]);
   });
 
-  test("enforcer.getAllNamedSubjects", async () => {
-    await expect(enforcer.getAllNamedSubjects("p")).resolves.toEqual([
+  it("enforcer.getAllNamedSubjects", async function () {
+    await expect(enforcer.getAllNamedSubjects("p")).to.eventually.eql([
       "alice",
       "bob",
       "data2_admin",
     ]);
   });
 
-  test("enforcer.getAllObjects", async () => {
-    await expect(enforcer.getAllObjects()).resolves.toEqual(["data1", "data2"]);
-  });
-
-  test("enforcer.getAllNamedObjects", async () => {
-    await expect(enforcer.getAllNamedObjects("p")).resolves.toEqual([
+  it("enforcer.getAllObjects", async function () {
+    await expect(enforcer.getAllObjects()).to.eventually.eql([
       "data1",
       "data2",
     ]);
-    await expect(enforcer.getAllNamedObjects("g")).resolves.toEqual([]);
   });
 
-  test("enforcer.getAllActions", async () => {
-    await expect(enforcer.getAllActions()).resolves.toEqual(["read", "write"]);
+  it("enforcer.getAllNamedObjects", async function () {
+    await expect(enforcer.getAllNamedObjects("p")).to.eventually.eql([
+      "data1",
+      "data2",
+    ]);
+    await expect(enforcer.getAllNamedObjects("g")).to.eventually.eql([]);
   });
 
-  test("enforcer.getAllNamedActions", async () => {
-    await expect(enforcer.getAllNamedActions("p")).resolves.toEqual([
+  it("enforcer.getAllActions", async function () {
+    await expect(enforcer.getAllActions()).to.eventually.eql(["read", "write"]);
+  });
+
+  it("enforcer.getAllNamedActions", async function () {
+    await expect(enforcer.getAllNamedActions("p")).to.eventually.eql([
       "read",
       "write",
     ]);
   });
 
-  test("enforcer.getAllRoles", async () => {
-    await expect(enforcer.getAllRoles()).resolves.toEqual(["data2_admin"]);
+  it("enforcer.getAllRoles", async function () {
+    await expect(enforcer.getAllRoles()).to.eventually.eql(["data2_admin"]);
   });
 
-  test("enforcer.getAllNamedRoles", async () => {
-    await expect(enforcer.getAllNamedRoles("p")).resolves.toEqual([]);
-    await expect(enforcer.getAllNamedRoles("g")).resolves.toEqual([
+  it("enforcer.getAllNamedRoles", async function () {
+    await expect(enforcer.getAllNamedRoles("p")).to.eventually.eql([]);
+    await expect(enforcer.getAllNamedRoles("g")).to.eventually.eql([
       "data2_admin",
     ]);
   });
 
-  test("enforcer.getPolicy", async () => {
-    await expect(enforcer.getPolicy()).resolves.toEqual([
+  it("enforcer.getPolicy", async function () {
+    await expect(enforcer.getPolicy()).to.eventually.eql([
       policies.alice,
       policies.bob,
       policies.data2AdminRead,
@@ -109,14 +121,14 @@ describe("ObjectionAdapter (RBAC)", () => {
     ]);
   });
 
-  test("enforcer.getFilteredPolicy", async () => {
-    await expect(enforcer.getFilteredPolicy(0, "alice")).resolves.toEqual([
+  it("enforcer.getFilteredPolicy", async function () {
+    await expect(enforcer.getFilteredPolicy(0, "alice")).to.eventually.eql([
       ["alice", "data1", "read"],
     ]);
   });
 
-  test("enforcer.getNamedPolicy", async () => {
-    await expect(enforcer.getNamedPolicy("p")).resolves.toEqual([
+  it("enforcer.getNamedPolicy", async function () {
+    await expect(enforcer.getNamedPolicy("p")).to.eventually.eql([
       policies.alice,
       policies.bob,
       policies.data2AdminRead,
@@ -124,87 +136,87 @@ describe("ObjectionAdapter (RBAC)", () => {
     ]);
   });
 
-  test("enforcer.getFilteredNamedPolicy", async () => {
+  it("enforcer.getFilteredNamedPolicy", async function () {
     await expect(
       enforcer.getFilteredNamedPolicy("p", 0, "bob"),
-    ).resolves.toEqual([["bob", "data2", "write"]]);
+    ).to.eventually.eql([["bob", "data2", "write"]]);
   });
 
-  test("enforcer.getGroupingPolicy", async () => {
-    await expect(enforcer.getGroupingPolicy()).resolves.toEqual([
+  it("enforcer.getGroupingPolicy", async function () {
+    await expect(enforcer.getGroupingPolicy()).to.eventually.eql([
       ["alice", "data2_admin"],
     ]);
   });
 
-  test("enforcer.getNamedGroupingPolicy", async () => {
-    await expect(enforcer.getNamedGroupingPolicy("p")).resolves.toEqual([]);
+  it("enforcer.getNamedGroupingPolicy", async function () {
+    await expect(enforcer.getNamedGroupingPolicy("p")).to.eventually.eql([]);
   });
 
-  test("enforcer.getFilteredNamedGroupingPolicy", async () => {
+  it("enforcer.getFilteredNamedGroupingPolicy", async function () {
     await expect(
       enforcer.getFilteredNamedGroupingPolicy("p", 0, "bob"),
-    ).resolves.toEqual([]);
+    ).to.eventually.eql([]);
   });
 
-  test("enforcer.hasPolicy", async () => {
-    await expect(enforcer.hasPolicy(...policies.bob)).resolves.toEqual(true);
+  it("enforcer.hasPolicy", async function () {
+    await expect(enforcer.hasPolicy(...policies.bob)).to.eventually.eql(true);
 
     await expect(
       enforcer.hasPolicy("alice", "data2", "write"),
-    ).resolves.toEqual(false);
+    ).to.eventually.eql(false);
   });
 
-  test("enforcer.hasNamedPolicy", async () => {
+  it("enforcer.hasNamedPolicy", async function () {
     await expect(
       enforcer.hasNamedPolicy("p", ...policies.alice),
-    ).resolves.toEqual(true);
+    ).to.eventually.eql(true);
 
     await expect(
       enforcer.hasNamedPolicy("g", "alice", "data1", "read"),
-    ).resolves.toEqual(false);
+    ).to.eventually.eql(false);
   });
 
-  describe("enforcer.addPolicy", () => {
-    test("adds the new policy and saves it", async () => {
+  describe("enforcer.addPolicy", function () {
+    it("adds the new policy and saves it", async function () {
       const result = await enforcer.addPolicy("thor", "data1", "write");
       const rules = await CasbinRule.query();
 
-      expect(result).toBe(true);
-      expect(rules).toHaveLength(6);
+      expect(result).to.eql(true);
+      expect(rules).to.have.length(6);
     });
 
-    test("returns false if the rule already exists", async () => {
+    it("returns false if the rule already exists", async function () {
       const result = await enforcer.addPolicy(...policies.alice);
       const rules = await CasbinRule.query();
 
-      expect(result).toBe(false);
-      expect(rules).toHaveLength(5);
+      expect(result).to.eql(false);
+      expect(rules).to.have.length(5);
     });
   });
 
-  describe("enforcer.addPolicies", () => {
-    test("adds the new policies and saves them if there are no conflicts", async () => {
+  describe("enforcer.addPolicies", function () {
+    it("adds the new policies and saves them if there are no conflicts", async function () {
       const result = await enforcer.addPolicies([
         ["admin", "domain3", "data3", "read"],
         ["admin", "domain3", "data3", "write"],
       ]);
       const rules = await CasbinRule.query();
 
-      expect(result).toBe(true);
-      expect(rules).toHaveLength(7);
+      expect(result).to.eql(true);
+      expect(rules).to.have.length(7);
     });
 
-    test("returns false if any of the policies already exist", async () => {
+    it("returns false if any of the policies already exist", async function () {
       const result = await enforcer.addPolicies([
         ["admin", "domain3", "data3", "read"],
         ["admin", "domain3", "data3", "write"],
         policies.alice,
       ]);
 
-      expect(result).toBe(false);
+      expect(result).to.eql(false);
     });
 
-    test("does not persist anything if a policy already exists", async () => {
+    it("does not persist anything if a policy already exists", async function () {
       await enforcer.addPolicies([
         ["admin", "domain3", "data3", "read"],
         ["admin", "domain3", "data3", "write"],
@@ -212,12 +224,12 @@ describe("ObjectionAdapter (RBAC)", () => {
       ]);
       const rules = await CasbinRule.query();
 
-      expect(rules).toHaveLength(5);
+      expect(rules).to.have.length(5);
     });
   });
 
-  describe("enforcer.addNamedPolicy", () => {
-    test("adds the new policy and saves it", async () => {
+  describe("enforcer.addNamedPolicy", function () {
+    it("adds the new policy and saves it", async function () {
       const result = await enforcer.addNamedPolicy(
         "p",
         "admin",
@@ -227,45 +239,45 @@ describe("ObjectionAdapter (RBAC)", () => {
       );
       const rules = await CasbinRule.query();
 
-      expect(result).toBe(true);
-      expect(rules).toHaveLength(6);
+      expect(result).to.eql(true);
+      expect(rules).to.have.length(6);
     });
 
-    test("returns false if the rule already exists", async () => {
+    it("returns false if the rule already exists", async function () {
       const result = await enforcer.addNamedPolicy(
         "p",
         ...policies.data2AdminRead,
       );
       const rules = await CasbinRule.query();
 
-      expect(result).toBe(false);
-      expect(rules).toHaveLength(5);
+      expect(result).to.eql(false);
+      expect(rules).to.have.length(5);
     });
   });
 
-  describe("enforcer.addNamedPolicies", () => {
-    test("adds the new policies and saves them if there are no conflicts", async () => {
+  describe("enforcer.addNamedPolicies", function () {
+    it("adds the new policies and saves them if there are no conflicts", async function () {
       const result = await enforcer.addNamedPolicies("p", [
         ["admin", "domain3", "data3", "read"],
         ["admin", "domain3", "data3", "write"],
       ]);
       const rules = await CasbinRule.query();
 
-      expect(result).toBe(true);
-      expect(rules).toHaveLength(7);
+      expect(result).to.eql(true);
+      expect(rules).to.have.length(7);
     });
 
-    test("returns false if any of the policies already exist", async () => {
+    it("returns false if any of the policies already exist", async function () {
       const result = await enforcer.addNamedPolicies("p", [
         ["admin", "domain3", "data3", "read"],
         ["admin", "domain3", "data3", "write"],
         policies.bob,
       ]);
 
-      expect(result).toBe(false);
+      expect(result).to.eql(false);
     });
 
-    test("does not persist anything if a policy already exists", async () => {
+    it("does not persist anything if a policy already exists", async function () {
       await enforcer.addNamedPolicies("p", [
         ["admin", "domain3", "data3", "read"],
         ["admin", "domain3", "data3", "write"],
@@ -273,33 +285,35 @@ describe("ObjectionAdapter (RBAC)", () => {
       ]);
       const rules = await CasbinRule.query();
 
-      expect(rules).toHaveLength(5);
+      expect(rules).to.have.length(5);
     });
   });
 
-  test("enforcer.removePolicy", async () => {
-    await expect(enforcer.removePolicy(...policies.bob)).resolves.toEqual(true);
+  it("enforcer.removePolicy", async function () {
+    await expect(enforcer.removePolicy(...policies.bob)).to.eventually.eql(
+      true,
+    );
 
-    await expect(enforcer.removePolicy(...policies.bob)).resolves.toEqual(
+    await expect(enforcer.removePolicy(...policies.bob)).to.eventually.eql(
       false,
     );
 
-    await expect(CasbinRule.query()).resolves.toHaveLength(4);
+    await expect(CasbinRule.query()).to.eventually.have.length(4);
   });
 
-  test("enforcer.removePolicies", async () => {
+  it("enforcer.removePolicies", async function () {
     await expect(
       enforcer.removePolicies([policies.alice, policies.bob]),
-    ).resolves.toEqual(true);
+    ).to.eventually.eql(true);
 
-    await expect(enforcer.removePolicies([policies.alice])).resolves.toEqual(
+    await expect(enforcer.removePolicies([policies.alice])).to.eventually.eql(
       false,
     );
 
-    await expect(CasbinRule.query()).resolves.toHaveLength(3);
+    await expect(CasbinRule.query()).to.eventually.have.length(3);
   });
 
-  test("enforcer.removeFilteredPolicy", async () => {
+  it("enforcer.removeFilteredPolicy", async function () {
     const subject = "alice"; // the user that wants to access a resource.
     const resource = "data1"; // the resource that is going to be accessed.
     const action = "read"; // the operation that the user performs on the resource.
@@ -307,27 +321,27 @@ describe("ObjectionAdapter (RBAC)", () => {
     let result = await enforcer.enforce(subject, resource, action);
     let hasPolicy = await enforcer.hasPolicy(subject, resource, action);
 
-    expect(result).toBe(true);
-    expect(hasPolicy).toBe(true);
+    expect(result).to.eql(true);
+    expect(hasPolicy).to.eql(true);
 
     await enforcer.removeFilteredPolicy(0, subject, resource, action);
 
     hasPolicy = await enforcer.hasPolicy(subject, resource, action);
     result = await enforcer.enforce(subject, resource, action);
 
-    expect(hasPolicy).toBe(false);
-    expect(result).toBe(false);
+    expect(hasPolicy).to.eql(false);
+    expect(result).to.eql(false);
   });
 
-  test("enforcer.removeFilteredGroupingPolicy", async () => {
+  it("enforcer.removeFilteredGroupingPolicy", async function () {
     await expect(
       enforcer.removeFilteredGroupingPolicy(0, "alice"),
-    ).resolves.toBe(true);
+    ).to.eventually.eql(true);
 
     await enforcer.addGroupingPolicy("group1", "data2_admin");
 
     await expect(
       enforcer.removeFilteredGroupingPolicy(0, "alice"),
-    ).resolves.toBe(false);
+    ).to.eventually.eql(false);
   });
 });

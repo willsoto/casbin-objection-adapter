@@ -1,5 +1,5 @@
 import Knex from "knex";
-import * as path from "path";
+import path from "path";
 
 export function makeAndConfigureDatabase(dirname: string): Knex {
   const knex = Knex({
