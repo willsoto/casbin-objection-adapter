@@ -116,7 +116,7 @@
     "@commitlint/cli": "~11.0.0",
     "@commitlint/config-conventional": "~11.0.0",
     "@istanbuljs/nyc-config-typescript": "~1.0.1",
-    "@microsoft/api-documenter": "~7.9.8",
+    "@microsoft/api-documenter": "~7.10.1",
     "@microsoft/api-extractor": "~7.11.1",
     "@types/chai": "~4.2.13",
     "@types/chai-as-promised": "~7.1.3",
