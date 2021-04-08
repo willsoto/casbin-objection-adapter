@@ -10,7 +10,3 @@ updates:
       separator: "-"
     open-pull-requests-limit: 99
     target-branch: "main"
-    allow:
-      - dependency-type: direct
-    labels:
-      - "automerge"
