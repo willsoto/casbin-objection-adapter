@@ -101,7 +101,7 @@
     "casbin": "~5.8.0",
     "chai": "~4.3.4",
     "chai-as-promised": "~7.1.1",
-    "eslint": "~7.28.0",
+    "eslint": "~7.29.0",
     "eslint-config-prettier": "~8.3.0",
     "eslint-plugin-mocha": "~9.0.0",
     "husky": "~6.0.0",
