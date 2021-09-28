@@ -87,7 +87,7 @@
     "statements": 85
   },
   "devDependencies": {
-    "@commitlint/cli": "~13.1.0",
+    "@commitlint/cli": "~13.2.0",
     "@commitlint/config-conventional": "~13.1.0",
     "@istanbuljs/nyc-config-typescript": "~1.0.1",
     "@types/chai": "~4.2.17",
