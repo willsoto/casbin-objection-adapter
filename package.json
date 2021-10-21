@@ -26,6 +26,7 @@
     "prebuild": "npm run clean",
     "build": "tsc --project tsconfig.build.json",
     "clean": "rimraf dist coverage .nyc_output",
+    "format": "prettier . --write",
     "lint": "eslint . --fix --ignore-path=.gitignore",
     "prepare": "husky install",
     "prerelease": "npm run build",
@@ -53,6 +54,12 @@
       "markdown-toc -i",
       "prettier --write"
     ]
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "semi": true,
+    "singleQuote": false,
+    "trailingComma": "all"
   },
   "mocha": {
     "extension": [
@@ -146,7 +153,7 @@
     ]
   },
   "volta": {
-    "node": "14.16.0",
-    "npm": "7.6.0"
+    "node": "14.18.1",
+    "npm": "8.1.1"
   }
 }
