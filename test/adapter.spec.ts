@@ -1,6 +1,6 @@
 import { Enforcer, newEnforcer } from "casbin";
 import { expect } from "chai";
-import Knex from "knex";
+import { Knex } from "knex";
 import objection from "objection";
 import path from "path";
 import { CasbinRule, ObjectionAdapter } from "../src";

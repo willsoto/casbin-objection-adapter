@@ -1,8 +1,8 @@
-import Knex from "knex";
+import knex, { Knex } from "knex";
 import path from "path";
 
 export function makeAndConfigureDatabase(dirname: string): Knex {
-  const knex = Knex({
+  return knex({
     client: "sqlite3",
     useNullAsDefault: true,
     asyncStackTraces: true,
@@ -10,6 +10,4 @@ export function makeAndConfigureDatabase(dirname: string): Knex {
       filename: path.join(dirname, "casbin.sqlite"),
     },
   });
-
-  return knex;
 }

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { Adapter, Helper, Model } from "casbin";
-import Knex from "knex";
+import { Adapter, Assertion, Helper, Model } from "casbin";
+import { Knex } from "knex";
 import { CasbinRule } from "./model";
 import { Logger, ObjectionAdapterOptions, Policy } from "./types";
 
@@ -99,8 +99,8 @@ export class ObjectionAdapter implements Adapter {
 
     const policies: Policy[] = [];
 
-    const p = model.model.get("p") ?? new Map();
-    const g = model.model.get("g") ?? new Map();
+    const p = model.model.get("p") ?? new Map<string, Assertion>();
+    const g = model.model.get("g") ?? new Map<string, Assertion>();
 
     for (const [ptype, ast] of p) {
       for (const rule of ast.policy) {
