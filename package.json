@@ -29,11 +29,12 @@
     "lint": "eslint . --fix --ignore-path=.gitignore",
     "prepare": "husky install",
     "prerelease": "npm run build",
-    "release": "standard-version --sign",
+    "release": "semantic-release",
     "test": "mocha",
-    "pretest:cov": "rimraf coverage .nyc_output",
-    "test:cov": "nyc mocha",
-    "test:watch": "mocha --watch"
+    "pretest:coverage": "rimraf coverage .nyc_output",
+    "test:coverage": "nyc mocha",
+    "test:watch": "mocha --watch",
+    "typecheck": "tsc --project tsconfig.lint.json --noEmit"
   },
   "commitlint": {
     "extends": [
@@ -90,6 +91,7 @@
     "@commitlint/cli": "~13.2.1",
     "@commitlint/config-conventional": "~13.2.0",
     "@istanbuljs/nyc-config-typescript": "~1.0.1",
+    "@semantic-release/changelog": "~6.0.0",
     "@types/chai": "~4.2.22",
     "@types/chai-as-promised": "~7.1.4",
     "@types/mocha": "~9.0.0",
@@ -117,11 +119,11 @@
     "reflect-metadata": "~0.1.13",
     "rimraf": "~3.0.2",
     "rxjs": "~7.4.0",
+    "semantic-release": "~18.0.0",
     "sinon": "~11.1.2",
     "sinon-chai": "~3.7.0",
     "source-map-support": "~0.5.20",
     "sqlite3": "~5.0.2",
-    "standard-version": "~9.3.2",
     "ts-node": "~10.3.1",
     "typescript": "~4.4.4"
   },
@@ -129,6 +131,19 @@
     "casbin": "^5.4.2",
     "knex": "^0.95.2",
     "objection": "^3.0.0"
+  },
+  "node": "^14.13.1 || >=16.0.0",
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/github",
+      "@semantic-release/npm",
+      "@semantic-release/changelog"
+    ]
   },
   "volta": {
     "node": "14.16.0",
