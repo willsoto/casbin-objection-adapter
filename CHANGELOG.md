@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/willsoto/casbin-objection-adapter/compare/v1.0.0...v1.1.0) (2021-11-21)
+
+
+### Features
+
+* **releases:** generate and commit changelog ([0ebdf47](https://github.com/willsoto/casbin-objection-adapter/commit/0ebdf47b8008a696bb1c5b61e572a43c2be834f3))
+
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
