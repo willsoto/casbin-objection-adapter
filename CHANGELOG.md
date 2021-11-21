@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/willsoto/casbin-objection-adapter/compare/v1.1.0...v1.2.0) (2021-11-21)
+
+
+### Features
+
+* **dependencies:** upgrade all dependencies ([9404c15](https://github.com/willsoto/casbin-objection-adapter/commit/9404c1543bb7feb87ee2b0ca8f81880a42b3e7e1))
+
 # [1.1.0](https://github.com/willsoto/casbin-objection-adapter/compare/v1.0.0...v1.1.0) (2021-11-21)
 
 
