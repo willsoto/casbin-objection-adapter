@@ -49,7 +49,7 @@ describe("ObjectionAdapter (ABAC)", function () {
     await knex.destroy();
   });
 
-  it("it correctly enforces the policies", async function () {
+  it("should correctly enforce the policies", async function () {
     await expect(enforcer.enforce("alice", data1, "read")).to.eventually.eql(
       true,
     );
