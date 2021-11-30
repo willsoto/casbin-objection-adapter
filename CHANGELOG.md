@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/willsoto/casbin-objection-adapter/compare/v1.2.0...v1.3.0) (2021-11-30)
+
+
+### Features
+
+* add node-tests reusable workflow ([a684e32](https://github.com/willsoto/casbin-objection-adapter/commit/a684e325a10fd00545e982dc63d9a96501aa2685))
+
 # [1.2.0](https://github.com/willsoto/casbin-objection-adapter/compare/v1.1.0...v1.2.0) (2021-11-21)
 
 
