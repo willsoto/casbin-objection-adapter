@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/willsoto/casbin-objection-adapter/compare/v2.0.0...v2.1.0) (2022-02-28)
+
+
+### Features
+
+* upgrade packages ([aff5149](https://github.com/willsoto/casbin-objection-adapter/commit/aff514974e6f21bec13199ecfb876c9ece3a23cb))
+
 # [2.0.0](https://github.com/willsoto/casbin-objection-adapter/compare/v1.3.0...v2.0.0) (2022-01-17)
 
 
