@@ -1,3 +1,17 @@
+# [3.0.0](https://github.com/willsoto/casbin-objection-adapter/compare/v2.1.0...v3.0.0) (2022-04-25)
+
+
+### Features
+
+* upgrade to Knex 2.0 ([870236a](https://github.com/willsoto/casbin-objection-adapter/commit/870236ab3071a65c581fd8d9ad9d41b1923e88d2))
+
+
+### BREAKING CHANGES
+
+* See Knex changelog for details https://github.com/knex/knex/releases/tag/2.0.0
+
+Signed-off-by: Will Soto <willsoto@users.noreply.github.com>
+
 # [2.1.0](https://github.com/willsoto/casbin-objection-adapter/compare/v2.0.0...v2.1.0) (2022-02-28)
 
 
