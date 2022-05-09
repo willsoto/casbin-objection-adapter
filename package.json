@@ -132,7 +132,7 @@
     "prettier-plugin-packagejson": "~2.2.15",
     "rimraf": "~3.0.2",
     "semantic-release": "~19.0.2",
-    "sinon": "~13.0.1",
+    "sinon": "~14.0.0",
     "sinon-chai": "~3.7.0",
     "sqlite3": "~5.0.5",
     "ts-node": "~10.7.0",
