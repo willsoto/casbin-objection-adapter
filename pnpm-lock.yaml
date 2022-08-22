@@ -15,7 +15,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': 5.32.0
   '@typescript-eslint/parser': 5.32.0
   c8: 7.12.0
-  casbin: 5.16.0
+  casbin: 5.17.0
   chai: 4.3.6
   chai-as-promised: 7.1.1
   eslint: 8.22.0
@@ -53,7 +53,7 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.32.0_skwyily37mbbeczecumobdn3qa
   '@typescript-eslint/parser': 5.32.0_4rv7y5c6xz3vfxwhbrcxxi73bq
   c8: 7.12.0
-  casbin: 5.16.0
+  casbin: 5.17.0
   chai: 4.3.6
   chai-as-promised: 7.1.1_chai@4.3.6
   eslint: 8.22.0
@@ -369,7 +369,7 @@ packages:
       '@types/node': 18.6.1
       chalk: 4.1.2
       cosmiconfig: 7.0.1
-      cosmiconfig-typescript-loader: 2.0.2_f6w67sjx3imwytyzb2qhabnzqe
+      cosmiconfig-typescript-loader: 2.0.2_hyxqsvmywotmmida6hiop4hb2m
       lodash: 4.17.21
       resolve-from: 5.0.0
       typescript: 4.7.4
@@ -1502,8 +1502,8 @@ packages:
       redeyed: 2.1.1
     dev: true
 
-  /casbin/5.16.0:
-    resolution: {integrity: sha512-sQh7860fG7VAhTyk2uqOlrVjxWUfEL9n5F/IswJlVRjMgEjIJqgM0nXoaMQieEc8cU+hVERJcCqQiRXdiFXTeQ==}
+  /casbin/5.17.0:
+    resolution: {integrity: sha512-QIm9bTDU0ALYfnD5ePMiNxgN8Xh03PaC8zRtpZvWBwehBnq++FjvuPGFifRHnflkx2g1w8A+ycZXarrNXmzJOw==}
     dependencies:
       await-lock: 2.2.2
       csv-parse: 4.16.3
@@ -1755,8 +1755,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
-      is-text-path: 1.0.1
       JSONStream: 1.3.5
+      is-text-path: 1.0.1
       lodash: 4.17.21
       meow: 8.1.2
       split2: 3.2.2
@@ -1773,11 +1773,12 @@ packages:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
     dev: true
 
-  /cosmiconfig-typescript-loader/2.0.2_f6w67sjx3imwytyzb2qhabnzqe:
+  /cosmiconfig-typescript-loader/2.0.2_hyxqsvmywotmmida6hiop4hb2m:
     resolution: {integrity: sha512-KmE+bMjWMXJbkWCeY4FJX/npHuZPNr9XF9q9CIQ/bpFwi1qHfCmSiKarrCcRa0LO4fWjk93pVoeRtJAkTGcYNw==}
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
       '@types/node': '*'
+      cosmiconfig: '>=7'
       typescript: '>=3'
     dependencies:
       '@types/node': 18.6.1
