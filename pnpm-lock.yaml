@@ -32,7 +32,7 @@ specifiers:
   prettier-plugin-packagejson: 2.2.18
   rimraf: 3.0.2
   semantic-release: 19.0.5
-  sinon: 14.0.0
+  sinon: 14.0.1
   sinon-chai: 3.7.0
   sqlite3: 5.1.1
   ts-node: 10.9.1
@@ -70,8 +70,8 @@ devDependencies:
   prettier-plugin-packagejson: 2.2.18_prettier@2.7.1
   rimraf: 3.0.2
   semantic-release: 19.0.5
-  sinon: 14.0.0
-  sinon-chai: 3.7.0_chai@4.3.6+sinon@14.0.0
+  sinon: 14.0.1
+  sinon-chai: 3.7.0_chai@4.3.6+sinon@14.0.1
   sqlite3: 5.1.1
   ts-node: 10.9.1_t6iukbiom2jlsbp4uv3roalcz4
   typescript: 4.8.4
@@ -4721,18 +4721,18 @@ packages:
       pkg-conf: 2.1.0
     dev: true
 
-  /sinon-chai/3.7.0_chai@4.3.6+sinon@14.0.0:
+  /sinon-chai/3.7.0_chai@4.3.6+sinon@14.0.1:
     resolution: {integrity: sha512-mf5NURdUaSdnatJx3uhoBOrY9dtL19fiOtAdT1Azxg3+lNJFiuN0uzaU3xX1LeAfL17kHQhTAJgpsfhbMJMY2g==}
     peerDependencies:
       chai: ^4.0.0
       sinon: '>=4.0.0'
     dependencies:
       chai: 4.3.6
-      sinon: 14.0.0
+      sinon: 14.0.1
     dev: true
 
-  /sinon/14.0.0:
-    resolution: {integrity: sha512-ugA6BFmE+WrJdh0owRZHToLd32Uw3Lxq6E6LtNRU+xTVBefx632h03Q7apXWRsRdZAJ41LB8aUfn2+O4jsDNMw==}
+  /sinon/14.0.1:
+    resolution: {integrity: sha512-JhJ0jCiyBWVAHDS+YSjgEbDn7Wgz9iIjA1/RK+eseJN0vAAWIWiXBdrnb92ELPyjsfreCYntD1ORtLSfIrlvSQ==}
     dependencies:
       '@sinonjs/commons': 1.8.3
       '@sinonjs/fake-timers': 9.1.2
