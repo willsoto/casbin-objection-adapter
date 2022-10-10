@@ -34,7 +34,7 @@ specifiers:
   semantic-release: 19.0.5
   sinon: 14.0.1
   sinon-chai: 3.7.0
-  sqlite3: 5.1.1
+  sqlite3: 5.1.2
   ts-node: 10.9.1
   typescript: 4.8.4
 
@@ -60,7 +60,7 @@ devDependencies:
   eslint-config-prettier: 8.5.0_eslint@8.24.0
   eslint-plugin-mocha: 10.1.0_eslint@8.24.0
   husky: 8.0.1
-  knex: 2.3.0_sqlite3@5.1.1
+  knex: 2.3.0_sqlite3@5.1.2
   lint-staged: 13.0.3
   markdown-toc: 1.2.0
   mocha: 10.0.0
@@ -72,7 +72,7 @@ devDependencies:
   semantic-release: 19.0.5
   sinon: 14.0.1
   sinon-chai: 3.7.0_chai@4.3.6+sinon@14.0.1
-  sqlite3: 5.1.1
+  sqlite3: 5.1.2
   ts-node: 10.9.1_t6iukbiom2jlsbp4uv3roalcz4
   typescript: 4.8.4
 
@@ -3206,7 +3206,7 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /knex/2.3.0_sqlite3@5.1.1:
+  /knex/2.3.0_sqlite3@5.1.2:
     resolution: {integrity: sha512-WMizPaq9wRMkfnwKXKXgBZeZFOSHGdtoSz5SaLAVNs3WRDfawt9O89T4XyH52PETxjV8/kRk0Yf+8WBEP/zbYw==}
     engines: {node: '>=12'}
     hasBin: true
@@ -3246,7 +3246,7 @@ packages:
       pg-connection-string: 2.5.0
       rechoir: 0.8.0
       resolve-from: 5.0.0
-      sqlite3: 5.1.1
+      sqlite3: 5.1.2
       tarn: 3.0.2
       tildify: 2.0.0
     transitivePeerDependencies:
@@ -4039,7 +4039,7 @@ packages:
     dependencies:
       ajv: 8.11.0
       db-errors: 0.2.3
-      knex: 2.3.0_sqlite3@5.1.1
+      knex: 2.3.0_sqlite3@5.1.2
     dev: true
 
   /once/1.4.0:
@@ -4881,8 +4881,8 @@ packages:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
     dev: true
 
-  /sqlite3/5.1.1:
-    resolution: {integrity: sha512-mMinkrQr/LKJqFiFF+AF7imPSzRCCpTCreusZO3D/ssJHVjZOrbu2Caz+zPH5KTmGGXBxXMGSRDssL+44CLxvg==}
+  /sqlite3/5.1.2:
+    resolution: {integrity: sha512-D0Reg6pRWAFXFUnZKsszCI67tthFD8fGPewRddDCX6w4cYwz3MbvuwRICbL+YQjBAh9zbw+lJ/V9oC8nG5j6eg==}
     requiresBuild: true
     peerDependenciesMeta:
       node-gyp:
