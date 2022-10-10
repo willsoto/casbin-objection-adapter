@@ -109,7 +109,7 @@
     "@typescript-eslint/eslint-plugin": "5.38.1",
     "@typescript-eslint/parser": "5.38.1",
     "c8": "7.12.0",
-    "casbin": "5.19.0",
+    "casbin": "5.19.1",
     "chai": "4.3.6",
     "chai-as-promised": "7.1.1",
     "eslint": "8.24.0",
