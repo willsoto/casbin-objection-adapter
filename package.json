@@ -137,7 +137,7 @@
     "knex": "^2.0.0",
     "objection": "^3.0.0"
   },
-  "packageManager": "pnpm@7.17.0",
+  "packageManager": "pnpm@7.17.1",
   "node": ">=16.0.0",
   "volta": {
     "node": "18.12.1"
