@@ -15,7 +15,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': 5.47.1
   '@typescript-eslint/parser': 5.47.1
   c8: 7.12.0
-  casbin: 5.20.3
+  casbin: 5.20.4
   chai: 4.3.7
   chai-as-promised: 7.1.1
   eslint: 8.32.0
@@ -53,7 +53,7 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.47.1_lxxchmivucqcmhzvhnmnywabcq
   '@typescript-eslint/parser': 5.47.1_7uibuqfxkfaozanbtbziikiqje
   c8: 7.12.0
-  casbin: 5.20.3
+  casbin: 5.20.4
   chai: 4.3.7
   chai-as-promised: 7.1.1_chai@4.3.7
   eslint: 8.32.0
@@ -1523,8 +1523,8 @@ packages:
       redeyed: 2.1.1
     dev: true
 
-  /casbin/5.20.3:
-    resolution: {integrity: sha512-tMAlMYD8AvjbKjVa7xTI1teDgNWQwgXtTBGKtpjgOAxNL5js9fRX07TovVBkYSoq/NyPeUY980dWbTNE4fIw/w==}
+  /casbin/5.20.4:
+    resolution: {integrity: sha512-ZroePYxSIRiwQ2RsShr/oTO6+nMvdVhmlJQ+6RPP6Khsx0Q+JUbNCqvnsUBAo4myXqgwRBAqEGqkgIggg1dxqg==}
     dependencies:
       await-lock: 2.2.2
       csv-parse: 4.16.3
